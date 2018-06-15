@@ -1,4 +1,4 @@
-# The Official raywenderlich.com Swift Style Guide.
+# The Official "Mirror" Swift Style Guide is fork by RMR-swift-style-guide.
 
 This style guide is different from others you may see, because the focus is centered on readability for print and the web. We created this style guide to keep the code in our books, tutorials, and starter kits nice and consistent — even though we have many different authors working on the books.
 
@@ -46,7 +46,6 @@ Our overarching goals are clarity, consistency and brevity, in that order.
   * [Failing Guards](#failing-guards)
 * [Semicolons](#semicolons)
 * [Parentheses](#parentheses)
-* [Organization and Bundle Identifier](#organization-and-bundle-identifier)
 * [References](#references)
 
 
@@ -56,7 +55,7 @@ Strive to make your code compile without warnings. This rule informs many style 
 
 ## Page guide
 
-Setup page guide in Xcode for 120 symbols. This number is recommended in swiftlint settings. So all code should be inside this page guide.
+Setup page guide in Xcode for 120 symbols. This number is recommended in swiftlint settings. So all code should be inside this page guide. But 80 symbols is prefered.
 
 ## Naming
 
@@ -209,9 +208,9 @@ The next sequence nice to follow:
 ```swift
 // MARK: - Types
 
-// MARK: - Constants
+// MARK: - Consts
 
-// MARK: - IBOutlet
+// MARK: - Outlets
 
 // MARK: - Public Properties
 
@@ -221,14 +220,14 @@ The next sequence nice to follow:
 
 // MARK: - UIViewController(*)
 
-// MARK: - Public methods
+// MARK: - Actions
 
-// MARK: - IBAction
-
-// MARK: - Private Methods
+// MARK: - Methods Group Name(*)
 
 ```
 > (*)Instead of `UIViewController` you must write other superclass, that methods you override.
+
+> (*)Instead of `Methods Group Name` you must write name to explain goal of this methods, that methods you override.
 
 ### Protocol Conformance
 
@@ -236,17 +235,21 @@ In particular, when adding protocol conformance to a model, prefer adding a sepa
 
 **Preferred:**
 ```swift
-class MyViewController: UIViewController {
+class MyViewController: UIViewController,
+                        UITableViewDataSource,
+                        UIScrollViewDelegate {
   // class stuff here
 }
 
 // MARK: - UITableViewDataSource
-extension MyViewController: UITableViewDataSource {
+
+extension MyViewController {
   // table view data source methods
 }
 
 // MARK: - UIScrollViewDelegate
-extension MyViewController: UIScrollViewDelegate {
+
+extension MyViewController {
   // scroll view delegate methods
 }
 ```
@@ -299,7 +302,32 @@ override func tableView(_ tableView: UITableView, numberOfRowsInSection section:
 ```
 ### Minimal Imports
 
-Keep imports minimal. For example, don't import `UIKit` when importing `Foundation` will suffice.
+Keep imports minimal. For example, don't import `UIKit` when importing `Foundation` will suffice. 
+Keep imports sorted by alphabet. 
+
+**Preferred:**
+```swift
+import AVFoundation
+import Crashlytics
+import Fabric
+import Photos
+import Presentr
+import RxSwift
+import UIKit
+```
+
+**Not Preferred:**
+```swift
+import Crashlytics
+import Fabric
+import AVFoundation
+import Photos
+import Foundation
+import Presentr
+import UIKit
+import RxSwift
+}
+```
 
 ## Spacing
 
@@ -354,6 +382,8 @@ class TestDatabase : Database {
 
 ## Comments
 
+**Only English language allowed.**
+
 When they are needed, use comments to explain **why** a particular piece of code does something. Comments must be kept up-to-date or deleted.
 
 Avoid block comments inline with code, as the code should be as self-documenting as possible. *Exception: This does not apply to those comments used to generate documentation.*
@@ -363,7 +393,7 @@ Avoid block comments inline with code, as the code should be as self-documenting
 
 ### Which one to use?
 
-Remember, structs have [value semantics](https://developer.apple.com/library/mac/documentation/Swift/Conceptual/Swift_Programming_Language/ClassesAndStructures.html#//apple_ref/doc/uid/TP40014097-CH13-XID_144). Use structs for things that do not have an identity. An array that contains [a, b, c] is really the same as another array that contains [a, b, c] and they are completely interchangeable. It doesn't matter whether you use the first array or the second, because they represent the exact same thing. That's why arrays are structs.
+Remember, structs have [value semantics](https://developer.apple.com/library/mac/documentation/Swift/Conceptual/Swift_Programming_Language/ClassesAndStructures.html#//apple_ref/doc/uid/TP40014097-CH13-XID_144). Use structs for things that do not have an identity. 
 
 Classes have [reference semantics](https://developer.apple.com/library/mac/documentation/Swift/Conceptual/Swift_Programming_Language/ClassesAndStructures.html#//apple_ref/doc/uid/TP40014097-CH13-XID_145). Use classes for things that do have an identity or a specific life cycle. You would model a person as a class because two person objects are two different things. Just because two people have the same name and birthdate, doesn't mean they are the same person. But the person's birthdate would be a struct because a date of 3 March 1950 is the same as any other date object for 3 March 1950. The date itself doesn't have an identity.
 
@@ -504,32 +534,40 @@ func reticulateSplines(spline: [Double]) -> Bool {
 }
 ```
 
-For functions add line breaks at each argument if it's exceed page guide:
+For functions with short arguments first argument can be placed in the same line as the method name:
 
 ```swift
-func reticulateSplines(
-    spline: [Double], 
-    adjustmentFactor: Double,
-    translateConstant: Int, 
-    comment: String) -> Bool {
-  // reticulate code goes here
+func reticulateSplines(spline: [Double], 
+                       adjustmentFactor: Double,
+                       translateConstant: Int, 
+                       comment: String) -> Bool {
+    // reticulate code goes here
+}
+```
+
+If argument name is long add line breaks at each argument if it's exceed page guide:
+
+```swift
+override func register(
+    withСardNumber cardNumber: String,
+    completion completionBlock: @escaping AuthService.RegisterWithCardNumberCompletionBlock,
+    failure failureBlock: @escaping Service.ServiceFailureBlock) -> WebTransportOperation {
+    // reticulate code goes here
 }
 ```
 
 The same rule applied for function calls.
 
-Leave two empty lines between functions and one after `MARK`s.
+Leave one empty lines between functions and one after `MARK`s.
 
 ```swift
 func colorView() {
     //...
 }
 
-
 func reticulate() {
     //...
 }
-
 
 // MARK: - Private
 
@@ -618,12 +656,12 @@ You can define constants on a type rather than on an instance of that type using
 
 **Preferred:**
 ```swift
-enum Math {
+struct Consts {
   static let e = 2.718281828459045235360287
   static let root2 = 1.41421356237309504880168872
 }
 
-let hypotenuse = side * Math.root2
+let hypotenuse = side * Consts.root2
 
 ```
 **Note:** The advantage of using a case-less enumeration is that it can't accidentally be instantiated and works as a pure namespace.
@@ -641,7 +679,7 @@ In case of declaration of single constant use following names
 **Preferred:**
 
 ```swift
-let TopMargin: CGFloat = 10
+let topMargin: CGFloat = 10
 ```
 
 **Not Preferred:**
@@ -658,8 +696,7 @@ Static methods and type properties work similarly to global functions and global
 ### Optionals
 
 Declare variables and function return types as optional with `?` where a nil value is acceptable.
-
-Use implicitly unwrapped types declared with `!` only for instance variables that you know will be initialized later before use, such as subviews that will be set up in `viewDidLoad`.
+Don't use unwrapped types declared with `!` .
 
 When accessing an optional value, use optional chaining if the value is only accessed once or if there are many optionals in the chain:
 
@@ -934,13 +971,11 @@ When coding with conditionals, the left-hand margin of the code should be the "g
 ```swift
 func computeFFT(context: Context?, inputData: InputData?) throws -> Frequencies {
 
-    guard let context = context
-        else {
-            throw FFTError.noContext
+    guard let context = context else {
+        throw FFTError.noContext
     }
-    guard let inputData = inputData
-        else {
-            throw FFTError.noInputData
+    guard let inputData = inputData else {
+        throw FFTError.noInputData
     }
 
     // use context and input to compute the frequencies
@@ -1081,12 +1116,6 @@ In larger expressions, optional parentheses can sometimes make code read more cl
 ```swift
 let playerMark = (player == current ? "X" : "O")
 ```
-
-## Organization and Bundle Identifier
-
-Where an Xcode project is involved, the organization should be set to `Ray Wenderlich` and the Bundle Identifier set to `com.razeware.TutorialName` where `TutorialName` is the name of the tutorial project.
-
-![Xcode Project settings](screens/project_settings.png)
 
 ## References
 
