@@ -1070,6 +1070,33 @@ if let number1 = number1 {
 }
 ```
 
+Use the separate guards to divide a conditions by meaning
+
+**Preferred:**
+```swift
+guard let `self` = self else { return }
+guard let number1 = number1 else { return }
+guard image != nil else { return }
+guard isShown == true else { return }
+
+// do something
+```
+
+**Not Preferred:**
+```swift
+guard 
+    let `self` = self,
+    let number1 = number1,
+    image != nil,
+    isShown == true
+else { 
+    return 
+}
+
+// do something
+```
+
+
 ### Failing Guards
 
 Guard statements are required to exit in some way. Generally, this should be simple one line statement such as `return`, `throw`, `break`, `continue`, and `fatalError()`. Large code blocks should be avoided. If cleanup code is required for multiple exit points, consider using a `defer` block to avoid cleanup code duplication.
