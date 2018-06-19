@@ -235,21 +235,19 @@ In particular, when adding protocol conformance to a model, prefer adding a sepa
 
 **Preferred:**
 ```swift
-class MyViewController: UIViewController,
-                        UITableViewDataSource,
-                        UIScrollViewDelegate {
+class MyViewController: UIViewController {
   // class stuff here
 }
 
 // MARK: - UITableViewDataSource
 
-extension MyViewController {
+extension MyViewController: UITableViewDataSource {
   // table view data source methods
 }
 
 // MARK: - UIScrollViewDelegate
 
-extension MyViewController {
+extension MyViewController: UIScrollViewDelegate {
   // scroll view delegate methods
 }
 ```
@@ -868,14 +866,14 @@ Code (even non-production, tutorial demo code) should not create reference cycle
 
 ### Extending object lifetime
 
-Extend object lifetime using the `[weak self]` and ```guard let `self` = self else { return }``` idiom. `[weak self]` is preferred to `[unowned self]` where it is not immediately obvious that `self` outlives the closure. Explicitly extending lifetime is preferred to optional unwrapping.
+Extend object lifetime using the `[weak self]` and ```guard let this = self else { return }``` idiom. `[weak self]` is preferred to `[unowned self]` where it is not immediately obvious that `self` outlives the closure. Explicitly extending lifetime is preferred to optional unwrapping.
 
 **Preferred**
 ```swift
 resource.request().onComplete { [weak self] response in
-    guard let `self` = self else { return }
-    let model = strongSelf.updateModel(response)
-    strongSelf.updateUI(model)
+    guard let this = self else { return }
+    let model = this.updateModel(response)
+    this.updateUI(model)
 }
 ```
 
